@@ -13,8 +13,7 @@ class tcpChat : public QObject
     Q_OBJECT
 
 public:
-    explicit tcpChat(QObject *parent = nullptr);
-    explicit tcpChat(int port);
+    explicit tcpChat(int port = 12345, QObject *parent = nullptr);
     void startChat();
 
 signals:

@@ -13,7 +13,6 @@
 #include "../sharedcode/tcpchat.h"
 
 #define TCP_port 12000
-#define COPYRIGHT_NOTE "(c) 2018"
 
 void print_usage(char* appname)
 {
@@ -39,6 +38,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("SHM Inventory");
     QCoreApplication::setApplicationVersion("0.0.2");
 
+    // print application info into terminal
     qout << endl << QCoreApplication::applicationName() << endl;
     qout << "Version " << QCoreApplication::applicationVersion() << endl;
     qout << "Design and development: Andrea Ferroni <andrea.ferroni.76@gmail.com" << endl;
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
             qInfo() << "Application launched in DAEMON MODE";
             qout << "Daemon mode" << endl << endl;
 
-            tcpChat *chat = new tcpChat(TCP_port);
+            tcpChat* chat = new tcpChat(TCP_port);
             chat->startChat();
 
         }

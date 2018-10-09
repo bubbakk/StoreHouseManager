@@ -1,11 +1,6 @@
 #include "tcpchat.h"
 
-tcpChat::tcpChat(QObject *parent) : QObject(parent)
-{
-
-}
-
-tcpChat::tcpChat(int port)
+tcpChat::tcpChat(int port, QObject *parent) : QObject(parent)
 {
     this->_tcpPort = port;
 }
