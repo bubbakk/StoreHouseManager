@@ -1,0 +1,14 @@
+[{
+  hostRequestData: {
+    IPAddress: "192.168.0.0",
+    hostName: "darkStellar",
+    application: "SHM autopilot",
+    UTCTimestamp: 1234567,
+    localTimestamp: 1234567,
+    readableDateTime: "19 Luglio 2019, 17:15 15s",
+    messageType: "request",
+    data: {
+       customField: "value"
+    }
+  }
+]
