@@ -49,32 +49,62 @@ bool TCPServer::startListening(int port)
 void TCPServer::slotAcceptConnection()
 {
     QTcpSocket* socket = this->server.nextPendingConnection();
-    connect(socket, SIGNAL(disconnected()), this, SLOT(slotClientDisconnect()));
     this->_clientsList.append(socket);
 
     emit newConnectionAccepted(socket);                 // emit newConnectionAccepted signal
+    connect(socket, SIGNAL(disconnected()),             // connect "disconnected" signal
+            this, SLOT(slotClientDisconnect()));
+    connect(socket, SIGNAL(readyRead()),                // connect "readyRead" signal
+            this, SLOT(slotReadReady()));
 
     qDebug() << "Client " << this->_clientsList.count() << " connected... ";
 }
 
-void TCPServer::slotClientDisconnect()
+void TCPServer::slotClientDisconnect(QTcpSocket* senderSocket)
 {
-    QTcpSocket *socket = qobject_cast<QTcpSocket *>(QObject::sender());
+    // getting source socket
+    QTcpSocket *socket = (senderSocket == nullptr) ?
+                qobject_cast<QTcpSocket *>(QObject::sender()) :
+                senderSocket;
 
-    int idx = this->_clientsList.indexOf(socket);
-    if (idx!=-1)
-        this->_clientsList.removeAt(idx);
+    // check if is in list
+    int socketIdx = this->_clientsList.indexOf(socket);
+    if ( socketIdx != -1)
+    {
+        this->_clientsList.removeAt(socketIdx);
+    }
+    else
+    {
+        qCritical() << "caller socket not found";
+    }
 
     QString nth = "";
-    idx++;
-    if ( idx == 1) nth = "1-st";
-    else if ( idx == 2 ) nth = "2-nd";
-    else if ( idx == 3 ) nth = "3-rd";
-    else nth = QString::number(idx) + "-th";
+    socketIdx++;
+    if ( socketIdx == 1) nth = "1-st";
+    else if ( socketIdx == 2 ) nth = "2-nd";
+    else if ( socketIdx == 3 ) nth = "3-rd";
+    else nth = QString::number(socketIdx) + "-th";
 
     qDebug().noquote() << "Disconnecting " << nth << " client... ";
 
+    emit connetionClosed(socket);
+
     socket->deleteLater();
+}
+
+void TCPServer::slotReadReady()
+{
+    QTcpSocket *socket = qobject_cast<QTcpSocket *>(QObject::sender());
+
+    while (socket->canReadLine())
+    {
+        QString data = QString(socket->readLine());
+        data = data.simplified();
+        int socketIdx = this->_clientsList.indexOf(socket);
+        qDebug() << "Line received from socket " << socketIdx << ": " << data;
+
+        emit messageReceived(socket, data);
+    }
 }
 /*
 void TCPServer::slotReadData()

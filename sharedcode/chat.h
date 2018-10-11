@@ -10,6 +10,8 @@ class chat : public QObject
 {
     Q_OBJECT
 public:
+    QMap<QString,QString> _commands;
+
     explicit chat(QObject *parent = nullptr);
     void setWelcomeMsgApplicationName(QString msg);
     void setCommands(QStringList msg);
@@ -18,14 +20,14 @@ public:
     
     QString welcomeMsg;
     
+    QMap<QString, QString> getCommands() const;
+
 signals:
     
 public slots:
     
 private:
-    QString lineSeparator = "\n";
-
-    QMap<QString,QString> commands;
+    QString _lineSeparator = "\n";
     QMap<QString,QString> replies;
 };
 

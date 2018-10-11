@@ -3,14 +3,23 @@
 chat::chat(QObject *parent) : QObject(parent)
 {
     // setting commands
-    this->commands.insert("HELLOCOMMAND",     "HELLO");
-    this->commands.insert("HELLOCOMMAND_",    "HELO");
-    this->commands.insert("HELPCOMMAND",      "HELP");
-    this->commands.insert("STARTMSGCOMMAND",  "SHM_MSG_STA");
-    this->commands.insert("ENDMSGCOMMAND",    "SHM_MSG_STO");
-    this->commands.insert("QUITCOMMAND",      "QUIT");
-    this->commands.insert("QUITCOMMAND_",     "BYE");
-    
+    this->_commands.insert("HELLOCOMMAND",     "HELLO");
+    this->_commands.insert("HELLOCOMMAND_",    "HELO");
+    this->_commands.insert("HELPCOMMAND",      "HELP");
+    this->_commands.insert("STARTMSGCOMMAND",  "SHM_MSG_STA");
+    this->_commands.insert("ENDMSGCOMMAND",    "SHM_MSG_STO");
+    this->_commands.insert("QUITCOMMAND",      "QUIT");
+    this->_commands.insert("QUITCOMMAND_",     "BYE");
+
+    /*
+         this->_commands.insert("HELLO",       "HELLOCOMMAND");
+         this->_commands.insert("HELP",        "HELPCOMMAND");
+         this->_commands.insert("SHM_MSG_STA", "STARTMSGCOMMAND");
+         this->_commands.insert("SHM_MSG_STO", "ENDMSGCOMMAND");
+         this->_commands.insert("QUIT",        "QUITCOMMAND");
+         this->_commands.insert("BYE",         "BYECOMMAND");
+    */
+
     // setting commands
     this->replies.insert("HELLO",       "Hello");
     this->replies.insert("HELO",        "Hello");
@@ -23,36 +32,40 @@ chat::chat(QObject *parent) : QObject(parent)
 
 void chat::setWelcomeMsgApplicationName(QString msg)
 {
-    this->welcomeMsg = "Connected to " + msg + this->lineSeparator;
+    this->welcomeMsg = "Connected to " + msg + this->_lineSeparator;
 }
 
 void chat::setLineSeparator(QString newSeparator)
 {
-    this->lineSeparator = newSeparator;
+    this->_lineSeparator = newSeparator;
 }
 
 QString chat::replyTo(QString request)
 {
     // custom reply
     // HELP
-    if ( request.compare(commands["HELPCOMMAND"], Qt::CaseInsensitive) )
+    if ( request.compare(this->_commands["HELPCOMMAND"], Qt::CaseInsensitive) == 0 )
     {
-        QStringList reply = {this->lineSeparator, "Available commands:"};
-        for ( int i = 0 ; i < this->commands.count() ; i++ ) {
-            foreach(QString key, this->commands.keys())
+        QStringList reply = {"Available commands:"};
+
+        foreach(QString key, this->_commands.keys())
+        {
+            if ( !key.endsWith("_") )
             {
-                if ( !key.endsWith("_") )
-                {
-                    reply.append(this->commands[key]);
-                }
+                reply.append(" * " + this->_commands[key]);
             }
         }
-        reply.append("All commands are case sentitive but " + this->commands[0]);
-        
-        return reply.join(this->lineSeparator);
+
+        reply.append("All commands are case sentitive but " + this->_commands["HELPCOMMAND"] + this->_lineSeparator + this->_lineSeparator);
+
+        return reply.join(this->_lineSeparator);
     }
     
-    // verifica che il comando sia in lista
-    this->replies.values();
-    return this->replies[request];
+    // ritorna la risposta se c'è, oppure stringa vuota
+    return (this->replies.keys().indexOf(request) == -1 ? "" : this->replies[request]);
+}
+
+QMap<QString, QString> chat::getCommands() const
+{
+    return _commands;
 }

@@ -27,14 +27,16 @@ public:
 
 signals:
     void newConnectionAccepted(QTcpSocket* socket);
-    //void signalMessageReceived(QStringList* message);
+    void messageReceived(QTcpSocket* socket, QString message);
+    void connetionClosed(QTcpSocket* socket);
 
 public slots:
 
 
 private slots:
-    void slotAcceptConnection();
-    void slotClientDisconnect();
+    void slotAcceptConnection(void);
+    void slotClientDisconnect(QTcpSocket* socket = nullptr);
+    void slotReadReady(void);
 
 private:
     int port = 0;

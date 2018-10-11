@@ -22,12 +22,20 @@ public slots:
 
 private slots:
     void slotTcpServerAcceptedConnection(QTcpSocket* socket);
+    void slotManageMessageReceived(QTcpSocket* socket, QString message);
+    void slotTcpServerClientDisconnetion(QTcpSocket*);
 
 private:
     TCPServer *_tcpServer;
     chat *_chat;
     int _tcpPort;
-    QMap<QTcpSocket*, chat*> _clientsCommunication;
+    struct communication {
+        QStringList* message;
+        bool started;
+        bool ended;
+    };
+    QMap<QTcpSocket*, communication*> _messageBuffers;
+
 
     void sendMessageToClient(QTcpSocket* socket, QString message);
 };
