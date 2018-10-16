@@ -7,10 +7,14 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QVariantList>
+
 #include "../sharedcode/shmrequestparser.h"
 #include "../sharedcode/tcpServer.h"
 #include "../sharedcode/messagehandler.h"
 #include "../sharedcode/tcpchat.h"
+
+#include "warehouse.h"
+#include "warehouserequestparser.h"
 
 #define TCP_port 12000
 
@@ -36,12 +40,12 @@ int main(int argc, char *argv[])
 
     QCoreApplication app(argc, argv);
     QCoreApplication::setApplicationName("SHM Inventory");
-    QCoreApplication::setApplicationVersion("0.0.2");
+    QCoreApplication::setApplicationVersion("0.0.3");
 
     // print application info into terminal
     qout << endl << QCoreApplication::applicationName() << endl;
     qout << "Version " << QCoreApplication::applicationVersion() << endl;
-    qout << "Design and development: Andrea Ferroni <andrea.ferroni.76@gmail.com" << endl;
+    qout << "Design and development: Andrea Ferroni <andrea.ferroni.76@gmail.com>" << endl;
     qout << "Developed for: elite s.c.p.a. <info@elitetech.it>" << endl << endl;
 
     qInstallMessageHandler(SHMMessagesHandler);                     // install message handler defined in messagehandler.h file
@@ -77,6 +81,8 @@ int main(int argc, char *argv[])
             fileContent = file.readAll();
             file.close();
 
+            wareHouseRequestParser parser(chat);
+
             requestsParser = new shmRequestParser();
             requestsParser->parse(fileContent);
 
@@ -96,10 +102,11 @@ int main(int argc, char *argv[])
             tcpChat* chat = new tcpChat(TCP_port);
             chat->startChat();
 
+            wareHouseRequestParser parser(chat);
+            wareHouse warehouse(50, 50);
+
         }
     }
-
-
 
     return app.exec();
 }

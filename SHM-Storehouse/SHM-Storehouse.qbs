@@ -5,6 +5,7 @@ Project {
 
     CppApplication {
         Depends { name: "Qt.core" }
+        Depends { name: "Qt.gui" }
         Depends { name: "Qt.network" }
 
         cpp.cxxLanguageVersion: "c++11"
@@ -37,10 +38,18 @@ Project {
             "../sharedcode/tcpchat.h",
             "HOW_TO_TEST.md",
             "main.cpp",
+            "objectcylinder.cpp",
+            "objectcylinder.h",
             "requests/not_valid_json_message.json",
             "requests/valid_json_message.json",
             "requests/valid_json_message_but_empty_array.json",
             "requests/valid_json_message_but_not_array.json",
+            "storeobject.cpp",
+            "storeobject.h",
+            "warehouse.cpp",
+            "warehouse.h",
+            "warehouserequestparser.cpp",
+            "warehouserequestparser.h",
         ]
 
         Group {     // Properties for the produced executable

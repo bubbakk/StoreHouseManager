@@ -17,6 +17,7 @@ public:
     void startChat();
 
 signals:
+    void messageReceived(QStringList* message);
 
 public slots:
 
@@ -35,7 +36,6 @@ private:
         bool ended;
     };
     QMap<QTcpSocket*, communication*> _messageBuffers;
-
 
     void sendMessageToClient(QTcpSocket* socket, QString message);
 };

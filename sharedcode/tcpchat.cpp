@@ -1,6 +1,6 @@
 #include "tcpchat.h"
 
-tcpChat::tcpChat(int port, QObject *parent) : QObject(parent)
+tcpChat::tcpChat(int port, QObject* parent) : QObject(parent)
 {
     this->_tcpPort = port;
 }
@@ -18,8 +18,8 @@ void tcpChat::startChat()
             this, SLOT(slotTcpServerAcceptedConnection(QTcpSocket*)));
     connect(this->_tcpServer, SIGNAL(messageReceived(QTcpSocket*, QString)),    // message received SLOT
             this, SLOT(slotManageMessageReceived(QTcpSocket*, QString)));
-    connect(this->_tcpServer, SIGNAL(connetionClosed(QTcpSocket*, QString)),    // connection closed SLOT
-            this, SLOT(slotTcpServerClientDisconnetion(QTcpSocket*, QString)));
+    connect(this->_tcpServer, SIGNAL(connetionClosed(QTcpSocket*)),    // connection closed SLOT
+            this, SLOT(slotTcpServerClientDisconnetion(QTcpSocket*)));
 }
 
 void tcpChat::slotTcpServerAcceptedConnection(QTcpSocket* socket)
@@ -60,6 +60,9 @@ void tcpChat::slotManageMessageReceived(QTcpSocket* socket, QString message)
 
             qInfo() << "Message buffer closed";
             qInfo() << this->_messageBuffers[socket]->message->join(" ");
+
+            // the message is closed: emit signal with the message pointer itself as parameter
+            emit messageReceived(this->_messageBuffers[socket]->message);
         }
         else
         {
@@ -96,7 +99,6 @@ void tcpChat::slotTcpServerClientDisconnetion(QTcpSocket* socket)
     // removing data (buffer included) associated to closed socket
     this->_messageBuffers.remove(socket);
 }
-
 
 void tcpChat::sendMessageToClient(QTcpSocket* socket, QString message)
 {
