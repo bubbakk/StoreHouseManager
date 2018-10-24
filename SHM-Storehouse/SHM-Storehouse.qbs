@@ -37,6 +37,7 @@ Project {
             "../sharedcode/tcpchat.cpp",
             "../sharedcode/tcpchat.h",
             "HOW_TO_TEST.md",
+            "docs/protocol.md",
             "main.cpp",
             "objectcylinder.cpp",
             "objectcylinder.h",
@@ -48,8 +49,8 @@ Project {
             "storeobject.h",
             "warehouse.cpp",
             "warehouse.h",
-            "warehouserequestparser.cpp",
-            "warehouserequestparser.h",
+            "warehousemajordomo.cpp",
+            "warehousemajordomo.h",
         ]
 
         Group {     // Properties for the produced executable

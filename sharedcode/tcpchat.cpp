@@ -62,7 +62,7 @@ void tcpChat::slotManageMessageReceived(QTcpSocket* socket, QString message)
             qInfo() << this->_messageBuffers[socket]->message->join(" ");
 
             // the message is closed: emit signal with the message pointer itself as parameter
-            emit messageReceived(this->_messageBuffers[socket]->message);
+            emit messageReceived(this->_messageBuffers[socket]->message->join("\n"));
         }
         else
         {

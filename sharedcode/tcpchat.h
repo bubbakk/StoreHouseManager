@@ -17,7 +17,7 @@ public:
     void startChat();
 
 signals:
-    void messageReceived(QStringList* message);
+    void messageReceived(QString message);
 
 public slots:
 

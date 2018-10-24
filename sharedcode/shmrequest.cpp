@@ -1,6 +1,6 @@
 #include "shmrequest.h"
 
-SHMRequest::SHMRequest()
+SHMRequest::SHMRequest(QObject *parent) : QObject (parent)
 {
 
 }
@@ -11,52 +11,54 @@ void SHMRequest::setRequest(QString IPAddress,
                             QString applicationPID,
                             QString UTCTimestamp,
                             QString localTimestamp,
-                            QString readableDateTime,
-                            QString messageType)
+                            QString readableLocalDateTime,
+                            QString messageType,
+                            QJsonValue data)
 {
     qInfo().noquote() << "◌ Implementare controlli sull'assegnazione in SHMRequest::setRequest()";
 
-    this->IPAddress.setAddress(IPAddress);                                                          // conversion to QHostAddress
-    this->hostName = hostName;
-    this->applicationName = applicationName;
-    this->applicationPID = applicationPID.toUShort();                                               // conversion to uint16_t
-    this->UTCTimestamp = UTCTimestamp.toUShort();                                                   // conversion to uint32_t
-    this->localTimestamp = localTimestamp.toUShort();                                               // conversion to uint32_t
-    this->readableDateTime = readableDateTime;
-    this->messageType = static_cast<messageTypeEnum>(dummyQME.keyToValue(messageType.toLatin1()));  // conversion to enum
+    this->_IPAddress.setAddress(IPAddress);                                                          // conversion to QHostAddress
+    this->_hostName = hostName;
+    this->_applicationName = applicationName;
+    this->_applicationPID = applicationPID.toUShort();                                               // conversion to uint16_t
+    this->_UTCTimestamp = UTCTimestamp.toUShort();                                                   // conversion to uint32_t
+    this->_localTimestamp = localTimestamp.toUShort();                                               // conversion to uint32_t
+    this->_readableLocalDateTime = readableLocalDateTime;
+    this->_messageType = static_cast<messageTypeEnum>(dummyQME.keyToValue(messageType.toLatin1()));  // conversion to enum
+    this->_data = data;
 }
 
 uint16_t SHMRequest::getApplicationPID() const
 {
-    return applicationPID;
+    return _applicationPID;
 }
 
 QString SHMRequest::getReadableDateTime() const
 {
-    return readableDateTime;
+    return _readableLocalDateTime;
 }
 
 uint32_t SHMRequest::getLocalTimestamp() const
 {
-    return localTimestamp;
+    return _localTimestamp;
 }
 
 uint32_t SHMRequest::getUTCTimestamp() const
 {
-    return UTCTimestamp;
+    return _UTCTimestamp;
 }
 
 QString SHMRequest::getApplicationName() const
 {
-    return applicationName;
+    return _applicationName;
 }
 
 QString SHMRequest::getHostName() const
 {
-    return hostName;
+    return _hostName;
 }
 
 QHostAddress SHMRequest::getIPAddress() const
 {
-    return IPAddress;
+    return _IPAddress;
 }

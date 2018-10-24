@@ -1,3 +1,4 @@
+SHM_MSG_STA
 [{
   "hostRequestData": {
     "IPAddress": "192.168.0.0",
@@ -6,10 +7,22 @@
     "applicationPID": 1234,
     "UTCTimestamp": 1234567,
     "localTimestamp": 1234567,
-    "readableDateTime": "19 Luglio 2019, 17:15 15s",
-    "messageType": "information",
+    "readableLocalDateTime": "19 Luglio 2019, 17:15 15s",
+    "messageType": "action",
     "data": {
-       "customField": "value"
+      "request": "add a new object",
+      "objectType": "cylinder",
+      "barcodes": [{
+        "type": "code128",
+        "code": "ABCD-12345.ciao$#"
+      }],
+      "arrivalTimestamp": 1539783454,
+      "readableArrivalDateTime": "Wed, 17 Oct 2018 13:33:59 GMT",
+      "size": {
+        "height": 2500,
+        "radius": 2350
+      }
     }
   }
 }]
+SHM_MSG_STO

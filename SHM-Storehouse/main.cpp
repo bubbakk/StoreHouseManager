@@ -14,7 +14,7 @@
 #include "../sharedcode/tcpchat.h"
 
 #include "warehouse.h"
-#include "warehouserequestparser.h"
+#include "warehousemajordomo.h"
 
 #define TCP_port 12000
 
@@ -81,14 +81,18 @@ int main(int argc, char *argv[])
             fileContent = file.readAll();
             file.close();
 
-            wareHouseRequestParser parser(chat);
-
+            // parse requests included in the file
             requestsParser = new shmRequestParser();
             requestsParser->parse(fileContent);
+
+            // execute the requests
+            warehouseMajordomo* majordomo = new warehouseMajordomo();
+            majordomo->dispatchRequests(requestsParser->getSHMRequestsList());
 
             // debug purposes only
             qout << fileContent;
 
+            // quit application
             QTimer::singleShot(1000, &app, SLOT(quit()));               // stop application after 5 seconds
         }
         else
@@ -99,11 +103,13 @@ int main(int argc, char *argv[])
             qInfo() << "Application launched in DAEMON MODE";
             qout << "Daemon mode" << endl << endl;
 
+            // start TCP chat server
             tcpChat* chat = new tcpChat(TCP_port);
             chat->startChat();
 
-            wareHouseRequestParser parser(chat);
-            wareHouse warehouse(50, 50);
+            // prepare to parse data and dispatch requests
+            warehouseMajordomo* majordomo = new warehouseMajordomo();
+            majordomo->listenTo(chat);
 
         }
     }

@@ -24,6 +24,8 @@ public:
 
     QString errorMessage = "";
 
+    QList<SHMRequest *> getSHMRequestsList() const;
+
 private:
     bool messageFormatCheck(QJsonObject* JSONObjectToCheck, QString* missingField);
     void extractSHMRequest(QJsonObject* JSONObjectSource, SHMRequest* request);
@@ -34,11 +36,12 @@ private:
                                     "applicationPID",
                                     "UTCTimestamp",
                                     "localTimestamp",
-                                    "readableDateTime",
+                                    "readableLocalDateTime",
                                     "messageType",
                                     "data"};
 
-    QList<SHMRequest*> SHMRequestsList;
+protected:
+    QList<SHMRequest*> _SHMRequestsList;
 
 
 signals:

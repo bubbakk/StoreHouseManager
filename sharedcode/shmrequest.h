@@ -6,6 +6,7 @@
 #include <QString>
 #include <QHostAddress>
 #include <inttypes.h>
+#include <QJsonObject>
 
 
 class SHMRequest : public QObject
@@ -13,27 +14,29 @@ class SHMRequest : public QObject
     Q_OBJECT
 
 public:
-    SHMRequest();
-    void setRequest(QString IPAddress,
-                    QString hostName,
-                    QString applicationName,
-                    QString applicationPID,
-                    QString UTCTimestamp,
-                    QString localTimestamp,
-                    QString readableDateTime,
-                    QString messageType);
+    SHMRequest(QObject *parent = nullptr);
+    void setRequest(QString _IPAddress,
+                    QString _hostName,
+                    QString _applicationName,
+                    QString _applicationPID,
+                    QString _UTCTimestamp,
+                    QString _localTimestamp,
+                    QString _readableLocalDateTime,
+                    QString _messageType,
+                    QJsonValue _data);
 
     enum messageTypeEnum { information, action };
     Q_ENUM(messageTypeEnum)
 
-    QHostAddress IPAddress;
-    QString hostName;
-    QString applicationName;
-    uint16_t applicationPID;
-    uint16_t UTCTimestamp;
-    uint16_t localTimestamp;
-    QString readableDateTime;
-    messageTypeEnum messageType;
+    QHostAddress _IPAddress;
+    QString _hostName;
+    QString _applicationName;
+    uint16_t _applicationPID;
+    uint16_t _UTCTimestamp;
+    uint16_t _localTimestamp;
+    QString _readableLocalDateTime;
+    messageTypeEnum _messageType;
+    QJsonValue _data;
 
     QHostAddress getIPAddress() const;
     QString getHostName() const;

@@ -11,7 +11,7 @@
 #include <QDateTime>
 #include <qlogging.h>
 
-#define LOGGING_DIR "/tmp"
+#define LOGGING_DIR     "/tmp"
 #define LOGGER_INFO     "Info:     "
 #define LOGGER_DEBUG    "Debug:    "
 #define LOGGER_WARNING  "Warning:  "

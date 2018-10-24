@@ -14,14 +14,14 @@ bool shmRequestParser::parse(QString messageToParse)
     SHMRequest* shmRequest;
     QJsonObject dummyQJO;
 
-    this->SHMRequestsList.clear();                                             // svuota la lista richieste
+    this->_SHMRequestsList.clear();                                             // svuota la lista richieste
 
     // parse JSON string
     QJsonDocument jsonDoc = QJsonDocument::fromJson(messageToParse.toUtf8(), &error);
-    if ( jsonDoc.isNull() ) {                                                   // verify parsing error
-        this->errorMessage = "JSON message parsing error: " + error.errorString();     // set error string
-        qWarning().noquote() << this->errorMessage;                                    // log JSON formato error
-        return false;                                                           // return unsuccess
+    if ( jsonDoc.isNull() ) {                                                           // verify parsing error
+        this->errorMessage = "JSON message parsing error: " + error.errorString();      // set error string
+        qWarning().noquote() << this->errorMessage;                                     // log JSON formato error
+        return false;                                                                   // return unsuccess
     }
 
     // check if there is an array; if not return error
@@ -68,7 +68,7 @@ bool shmRequestParser::parse(QString messageToParse)
         shmRequest = new SHMRequest();
 
         this->extractSHMRequest(&dummyQJO, shmRequest);         // do the work!
-        this->SHMRequestsList.append(shmRequest);
+        this->_SHMRequestsList.append(shmRequest);
 
     }
 
@@ -119,7 +119,13 @@ void shmRequestParser::extractSHMRequest(QJsonObject* JSONObjectSource, SHMReque
                         requestObject.value("applicationPID").toString(),
                         requestObject.value("UTCTimestamp").toString(),
                         requestObject.value("localTimestamp").toString(),
-                        requestObject.value("readableDateTime").toString(),
-                        requestObject.value("messageType").toString()
+                        requestObject.value("readableLocalDateTime").toString(),
+                        requestObject.value("messageType").toString(),
+                        requestObject.value("data")
                         );
+}
+
+QList<SHMRequest *> shmRequestParser::getSHMRequestsList() const
+{
+    return _SHMRequestsList;
 }
