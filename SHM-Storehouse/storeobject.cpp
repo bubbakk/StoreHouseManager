@@ -3,8 +3,12 @@
 
 storeObject::storeObject(QObject *parent) : QObject(parent)
 {
-    // when instancing a new object, a new UUID is created
+    // when instancing a new object:
+
+    // a new UUID is created
     this->_internalCode = QUuid::createUuid();
+    // a DateTime creation is assigned
+    this->_creationLocalDateTime = new QDateTime(QDateTime::currentDateTime());
 }
 
 void storeObject::addBarCode(storeObject::barcodeEnum barcodeType, QString code)
@@ -15,6 +19,11 @@ void storeObject::addBarCode(storeObject::barcodeEnum barcodeType, QString code)
     barcode->code = code;
 
     this->_barcodes.append(barcode);
+}
+
+void storeObject::addBarCode(storeObject::barcodeStruct *barCodeData)
+{
+    this->_barcodes.append(barCodeData);
 }
 
 int storeObject::weightInGrams() const
@@ -36,4 +45,25 @@ void storeObject::setInternalCode(const QUuid &internalCode)
 {
     _internalCode = internalCode;
 }
+
+QDateTime *storeObject::arrivalLocalDateTime() const
+{
+    return _arrivalLocalDateTime;
+}
+
+void storeObject::setArrivalLocalDateTime(QDateTime *arrivalLocalDateTime)
+{
+    _arrivalLocalDateTime = arrivalLocalDateTime;
+}
+
+QDateTime *storeObject::creationLocalDateTime() const
+{
+    return _creationLocalDateTime;
+}
+
+void storeObject::setCreationLocalDateTime(QDateTime *creationLocalDateTime)
+{
+    _creationLocalDateTime = creationLocalDateTime;
+}
+
 

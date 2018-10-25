@@ -37,6 +37,10 @@ int main(int argc, char *argv[])
     QTextStream qout(stdout);
 
     shmRequestParser *requestsParser;
+    warehouseMajordomo* majordomo = new warehouseMajordomo();;
+    wareHouse *warehouse = new wareHouse(10,10);
+
+    majordomo->setWareHouse(warehouse);
 
     QCoreApplication app(argc, argv);
     QCoreApplication::setApplicationName("SHM Inventory");
@@ -86,7 +90,6 @@ int main(int argc, char *argv[])
             requestsParser->parse(fileContent);
 
             // execute the requests
-            warehouseMajordomo* majordomo = new warehouseMajordomo();
             majordomo->dispatchRequests(requestsParser->getSHMRequestsList());
 
             // debug purposes only
@@ -108,7 +111,6 @@ int main(int argc, char *argv[])
             chat->startChat();
 
             // prepare to parse data and dispatch requests
-            warehouseMajordomo* majordomo = new warehouseMajordomo();
             majordomo->listenTo(chat);
 
         }

@@ -5,6 +5,10 @@
 #include <QString>
 #include <QList>
 #include <QPoint>
+#include <QPolygon>
+#include <QDebug>
+
+#include "storeobject.h"
 
 class wareHouse
 {
@@ -13,35 +17,24 @@ public:
     bool addArea(QList<QPoint> perimeter, QString name, QString color = "");
     void addObject();
 
+    void addPackageToWareHouse(storeObject *package);
+
     // area data structure inside the storehouse
     struct areaStruct
     {
+        int id;
         QString name;
         QList<QPoint> perimeter;
         QString cssColor;
-        QString code;
+        QPolygon perimetralPoints;
     };
     QList<areaStruct> areas;
 
 private:
-    int _maxHorizontalSizeInMillimeters;
-    int _maxVerticalSizeInMillimeters;
+    int _maxHorizontalSizeInCentimeters;
+    int _maxVerticalSizeInCentimeters;
 
-    struct objectBox
-    {
-        int sizeXInMillimeters;
-        int sizeYInMillimeters;
-        int sizeZInMillimeters;
-        int weightInGrams;
-
-    };
-
-    struct objectCylinder
-    {
-        int radiusInMillimeters;
-        int heightInMillimeters;
-
-    };
+    QList<storeObject*> _packages;
 };
 
 #endif // WAREHOUSE_H

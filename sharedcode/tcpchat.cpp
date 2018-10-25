@@ -30,7 +30,7 @@ void tcpChat::slotTcpServerAcceptedConnection(QTcpSocket* socket)
     newCommm->message = new QStringList();
     this->_messageBuffers[socket] = newCommm;                                   // coupling communication structure to socket
 
-    this->sendMessageToClient(socket, this->_chat->welcomeMsg);                 // send welcome message to new client
+    this->sendSimpleTextMessageToClient(socket, this->_chat->welcomeMsg);                 // send welcome message to new client
 }
 
 void tcpChat::slotManageMessageReceived(QTcpSocket* socket, QString message)
@@ -62,7 +62,7 @@ void tcpChat::slotManageMessageReceived(QTcpSocket* socket, QString message)
             qInfo() << this->_messageBuffers[socket]->message->join(" ");
 
             // the message is closed: emit signal with the message pointer itself as parameter
-            emit messageReceived(this->_messageBuffers[socket]->message->join("\n"));
+            emit messageReceived(this->_messageBuffers[socket]->message->join("\n"), socket);
         }
         else
         {
@@ -84,7 +84,7 @@ void tcpChat::slotManageMessageReceived(QTcpSocket* socket, QString message)
     QString reply = this->_chat->replyTo(message);
     if ( reply.compare("") != 0 )
     {
-        this->sendMessageToClient(socket, reply);
+        this->sendSimpleTextMessageToClient(socket, reply);
     }
 
     // QUITCOMMAND
@@ -100,9 +100,41 @@ void tcpChat::slotTcpServerClientDisconnetion(QTcpSocket* socket)
     this->_messageBuffers.remove(socket);
 }
 
-void tcpChat::sendMessageToClient(QTcpSocket* socket, QString message)
+void tcpChat::sendSimpleTextMessageToClient(QTcpSocket* socket, QString message)
 {
     socket->write(message.toLatin1());
+    socket->write("\r\n");
+    socket->flush();
+    socket->waitForBytesWritten();
+}
+
+void tcpChat::sendJSONMessageToClient(QTcpSocket *socket, QMap<QString, QString> values)
+{
+    // prepare JSON reply
+    QJsonObject firstLevel;
+    QJsonObject serverReplyDataField;
+    QJsonObject dataField;
+    for(auto e : values.toStdMap())
+    {
+        if (e.first == "requestReferenceID")
+        {
+            serverReplyDataField.insert("ReplyToID", QJsonValue(e.second));
+        } else
+        {
+            dataField.insert(e.first, QJsonValue(e.second));
+        }
+    }
+    serverReplyDataField.insert("applicationPID", QJsonValue(QCoreApplication::applicationPid()));
+    serverReplyDataField.insert("UTCTimestamp", QJsonValue(QDateTime::currentSecsSinceEpoch()));
+    serverReplyDataField.insert("localTimestamp", "TODO");
+    serverReplyDataField.insert("readableLocalDateTime", QJsonValue(QDateTime::currentDateTime().toString()));
+    serverReplyDataField.insert("data", dataField);
+
+    firstLevel.insert("serverReplyData", serverReplyDataField);
+
+    QJsonDocument messageToSend(firstLevel);
+
+    socket->write(messageToSend.toJson(QJsonDocument::Compact));
     socket->write("\r\n");
     socket->flush();
     socket->waitForBytesWritten();

@@ -13,9 +13,15 @@ public:
     objectCylinder(QObject *parent = nullptr);
 
 
+    int heightInCentimeters() const;
+    void setHeightInCentimeters(int heightInCentimeters);
+
+    int radiusInCentimeters() const;
+    void setRadiusInCentimeters(int radiusInCentimeters);
+
 private:
-    int _heightInMillimeters;
-    int _radiusInMillimeters;
+    int _heightInCentimeters;
+    int _radiusInCentimeters;
 };
 
 #endif // OBJECTCYLINDER_H

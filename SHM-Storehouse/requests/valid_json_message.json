@@ -1,4 +1,3 @@
-SHM_MSG_STA
 [{
   "hostRequestData": {
     "IPAddress": "192.168.0.0",
@@ -12,17 +11,16 @@ SHM_MSG_STA
     "data": {
       "request": "add a new object",
       "objectType": "cylinder",
-      "barcodes": [{
+      "barCodes": [{
         "type": "code128",
         "code": "ABCD-12345.ciao$#"
       }],
       "arrivalTimestamp": 1539783454,
       "readableArrivalDateTime": "Wed, 17 Oct 2018 13:33:59 GMT",
       "size": {
-        "height": 2500,
-        "radius": 2350
+        "height": 250,
+        "radius": 235
       }
     }
   }
 }]
-SHM_MSG_STO

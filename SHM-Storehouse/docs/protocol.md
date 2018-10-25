@@ -1,9 +1,12 @@
-# Communication protocol
+Communication protocol
+======================
+
 After initializing a TCP connection to server you have to send commands in a strict good format.
 
 The communication starts with a `SHM_MSG_STA` and closes with `SHM_MSG_STO`. The last command does not close the connection, but only the message. Once the message is closed, the application starts to process it.
 
-# Generic format
+Generic request format
+----------------------
 
 [TODO] PLEASE explain
 
@@ -18,25 +21,25 @@ The communication starts with a `SHM_MSG_STA` and closes with `SHM_MSG_STO`. The
     "readableLocalDateTime": "19 Luglio 2019, 17:15 15s",
     "messageType": "action",
     "data": {
-      "request": "add object",
-      "objectType": "cylinder"
-      "weight": 1200000,
-      "barCodes": [{
-        "type": "code128",
-        "code": "ABCD-12345.ciao$#"
-        "tag": "main barcode"                ???
-      }],
-      "arrivalTimestamp": 1539783454,
-      "readableArrivalDateTime": "Wed, 17 Oct 2018 13:33:59 GMT",
-      "size": {
-        "height": 2500,
-        "radius": 2350
-      }
+      ...specific application data format...
     }
   }
 },{
 ...
 }]
+
+# Generic reply format
+{
+  "serverReplyData": {
+    "requestReferenceID": "1234-1234567",
+    "applicationPID": 1234,
+    "UTCTimestamp": 1234567,
+    "localTimestamp": 1234567,
+    "readableLocalDateTime": "19 Luglio 2019, 17:15 15s",
+    "data": {
+    }
+  }
+}
 
 ## Available commands
 Each request has its own fields and specific meaning.

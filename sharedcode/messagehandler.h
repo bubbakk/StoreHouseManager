@@ -12,11 +12,11 @@
 #include <qlogging.h>
 
 #define LOGGING_DIR     "/tmp"
-#define LOGGER_INFO     "Info:     "
-#define LOGGER_DEBUG    "Debug:    "
-#define LOGGER_WARNING  "Warning:  "
-#define LOGGER_CRITICAL "Critical: "
-#define LOGGER_FATAL    "Fatal:    "
+#define LOGGER_INFO     "[I]: "
+#define LOGGER_DEBUG    "[D]: "
+#define LOGGER_WARNING  "[W]: "
+#define LOGGER_CRITICAL "[C]: "
+#define LOGGER_FATAL    "[F]: "
 
 /*!
   \fn void SHMMessagesHandler(QtMsgType type, const QMessageLogContext &, const QString & msg)

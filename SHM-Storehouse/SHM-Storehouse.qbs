@@ -37,6 +37,8 @@ Project {
             "../sharedcode/tcpchat.cpp",
             "../sharedcode/tcpchat.h",
             "HOW_TO_TEST.md",
+            "docs/architettura.md",
+            "docs/objects_description.md",
             "docs/protocol.md",
             "main.cpp",
             "objectcylinder.cpp",

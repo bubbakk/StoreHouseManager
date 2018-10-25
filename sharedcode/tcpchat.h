@@ -4,6 +4,11 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <QCoreApplication>
+#include <QMap>
+#include <QDateTime>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
 
 #include "./tcpServer.h"
 #include "./chat.h"
@@ -15,9 +20,11 @@ class tcpChat : public QObject
 public:
     explicit tcpChat(int port = 12345, QObject *parent = nullptr);
     void startChat();
+    void sendSimpleTextMessageToClient(QTcpSocket* socket, QString);
+    void sendJSONMessageToClient(QTcpSocket* socket, QMap<QString, QString>);
 
 signals:
-    void messageReceived(QString message);
+    void messageReceived(QString message, QTcpSocket *socket);
 
 public slots:
 
@@ -36,8 +43,6 @@ private:
         bool ended;
     };
     QMap<QTcpSocket*, communication*> _messageBuffers;
-
-    void sendMessageToClient(QTcpSocket* socket, QString message);
 };
 
 #endif // TCPCHAT_H

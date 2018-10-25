@@ -5,12 +5,15 @@
 #include <QJsonValue>
 #include <QJsonObject>
 #include <QUuid>
+#include <QLocale>
+#include <QTcpSocket>
 
 #include "../sharedcode/shmrequestparser.h"
 #include "../sharedcode/shmrequest.h"
 #include "../sharedcode/tcpchat.h"
 
 #include "storeobject.h"
+#include "warehouse.h"
 #include "objectcylinder.h"
 
 class warehouseMajordomo : public QObject
@@ -20,17 +23,20 @@ public:
     explicit warehouseMajordomo(QObject *parent = nullptr);
     void listenTo(tcpChat* tcpChat);
     void dispatchRequests(QList<SHMRequest*> SHMRequestsList);
+    void setWareHouse(wareHouse* warehouse);
 
 private:
-    tcpChat* _tcpChat;
-    shmRequestParser* _requestParser;
+    tcpChat *_tcpChat;
+    wareHouse *_warehouse;
+    shmRequestParser *_requestParser;
+    QTcpSocket *_communicationSocket;
 
-    void operation_AddANewObject(QJsonValue request);
+    storeObject* operation_CreateANewObject(QJsonValue request);
 
 signals:
 
 private slots:
-    void parseAndDispatch(QString);
+    void parseAndDispatch(QString, QTcpSocket*);
 };
 
 #endif // WAREHOUSEMAJORDOMO_H
