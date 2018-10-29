@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello Bulma!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script defer src="https://underscorejs.org/underscore.js"></script>
+    <script src="./js/gui_functions.js"></script>
+    <script src="./js/application_settings.js"></script>
+    <script defer src="./js/locator_communication.js"></script>
+    <script defer src="./js/proximity_communication.js"></script>
+    <script defer src="./js/reader_communication.js"></script>
+  </head>
+  <body>
+  <section class="section">
+    <div class="container">
+      <h1 class="title">
+        Gaffer
+      </h1>
+      <h2 class="subtitle">
+        a SHM module
+      </h2>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+        <div id="notification-error" class="notification is-danger is-hidden-tablet">
+            <button class="delete"></button>
+            <p id="error-text"></p>
+        </div>
+        <div id="notification-info"  class="notification is-info is-hidden-tablet">
+            <button class="delete"></button>
+            <p id="info-text"></p>
+        </div>
+    </div>
+  </section>
+  </body>
+</html>
