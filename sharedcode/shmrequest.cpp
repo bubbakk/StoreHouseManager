@@ -13,6 +13,7 @@ void SHMRequest::setRequest(QString IPAddress,
                             QString localTimestamp,
                             QString readableLocalDateTime,
                             QString messageType,
+                            QString _sourceID,
                             QJsonValue data)
 {
     qInfo().noquote() << "◌ Implementare controlli sull'assegnazione in SHMRequest::setRequest()";
@@ -25,7 +26,13 @@ void SHMRequest::setRequest(QString IPAddress,
     this->_localTimestamp = localTimestamp.toUShort();                                               // conversion to uint32_t
     this->_readableLocalDateTime = readableLocalDateTime;
     this->_messageType = static_cast<messageTypeEnum>(dummyQME.keyToValue(messageType.toLatin1()));  // conversion to enum
+    this->_sourceID = _sourceID;
     this->_data = data;
+}
+
+QString SHMRequest::getSourceID() const
+{
+    return _sourceID;
 }
 
 uint16_t SHMRequest::getApplicationPID() const

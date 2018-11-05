@@ -32,6 +32,7 @@ private:
     QTcpSocket *_communicationSocket;
 
     storeObject* operation_CreateANewObject(QJsonValue request);
+    bool operation_SetObjectLocation(QJsonValue request);
 
 signals:
 

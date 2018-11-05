@@ -121,6 +121,7 @@ void shmRequestParser::extractSHMRequest(QJsonObject* JSONObjectSource, SHMReque
                         requestObject.value("localTimestamp").toString(),
                         requestObject.value("readableLocalDateTime").toString(),
                         requestObject.value("messageType").toString(),
+                        requestObject.value("sourceID").toString(),
                         requestObject.value("data")
                         );
 }

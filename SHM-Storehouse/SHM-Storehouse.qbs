@@ -44,6 +44,8 @@ Project {
             "objectcylinder.cpp",
             "objectcylinder.h",
             "requests/not_valid_json_message.json",
+            "requests/test/add_a_new_object.json",
+            "requests/test/set_object_location.json",
             "requests/valid_json_message.json",
             "requests/valid_json_message_but_empty_array.json",
             "requests/valid_json_message_but_not_array.json",

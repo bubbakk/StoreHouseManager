@@ -9,6 +9,8 @@ storeObject::storeObject(QObject *parent) : QObject(parent)
     this->_internalCode = QUuid::createUuid();
     // a DateTime creation is assigned
     this->_creationLocalDateTime = new QDateTime(QDateTime::currentDateTime());
+    // object created is set as static
+    this->_status = statusEnum::is_static;
 }
 
 void storeObject::addBarCode(storeObject::barcodeEnum barcodeType, QString code)
@@ -26,15 +28,6 @@ void storeObject::addBarCode(storeObject::barcodeStruct *barCodeData)
     this->_barcodes.append(barCodeData);
 }
 
-int storeObject::weightInGrams() const
-{
-    return _weightInGrams;
-}
-
-void storeObject::setWeightInGrams(int weightInGrams)
-{
-    _weightInGrams = weightInGrams;
-}
 
 QUuid storeObject::internalCode() const
 {
@@ -64,6 +57,38 @@ QDateTime *storeObject::creationLocalDateTime() const
 void storeObject::setCreationLocalDateTime(QDateTime *creationLocalDateTime)
 {
     _creationLocalDateTime = creationLocalDateTime;
+}
+
+QString storeObject::uniqueBarcode() const
+{
+    return _uniqueBarcode;
+}
+
+storeObject::statusEnum storeObject::status() const
+{
+    return _status;
+}
+
+void storeObject::setStatus(const statusEnum &status)
+{
+    _status = status;
+}
+
+storeObject::positionStruct* storeObject::position() const
+{
+    return this->_position;
+}
+
+void storeObject::setPosition(int x, int y, int z)
+{
+    this->_position->locationX = x;
+    this->_position->locationY = y;
+    this->_position->locationZ = z;
+}
+
+void storeObject::setUniqueBarcode(const QString &uniqueBarcode)
+{
+    _uniqueBarcode = uniqueBarcode;
 }
 
 

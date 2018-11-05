@@ -23,20 +23,22 @@ public:
                     QString _localTimestamp,
                     QString _readableLocalDateTime,
                     QString _messageType,
+                    QString _sourceID,
                     QJsonValue _data);
 
     enum messageTypeEnum { information, action };
     Q_ENUM(messageTypeEnum)
 
-    QHostAddress _IPAddress;
-    QString _hostName;
-    QString _applicationName;
-    uint16_t _applicationPID;
-    uint16_t _UTCTimestamp;
-    uint16_t _localTimestamp;
-    QString _readableLocalDateTime;
-    messageTypeEnum _messageType;
-    QJsonValue _data;
+    QHostAddress _IPAddress;            // sender source IP
+    QString _hostName;                  // sender host name
+    QString _applicationName;           // sender application name
+    uint16_t _applicationPID;           // sender application PID
+    uint16_t _UTCTimestamp;             // sender UTC timestamp
+    uint16_t _localTimestamp;           // sender local timestamp
+    QString _readableLocalDateTime;     // sender local humand readable datetime
+    messageTypeEnum _messageType;       // sender message type
+    QString _sourceID;                  // sender identification
+    QJsonValue _data;                   // data content
 
     QHostAddress getIPAddress() const;
     QString getHostName() const;
@@ -45,6 +47,7 @@ public:
     uint32_t getUTCTimestamp() const;
     uint32_t getLocalTimestamp() const;
     QString getReadableDateTime() const;
+    QString getSourceID() const;
 
 private:
     QMetaObject dummyQMO = this->staticMetaObject;

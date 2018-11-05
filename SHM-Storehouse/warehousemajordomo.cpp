@@ -4,6 +4,10 @@ warehouseMajordomo::warehouseMajordomo(QObject *parent) : QObject(parent)
 {
 }
 
+/*
+ * Collega l'evento messageReceived della chat TCP con il parser della richiesta
+ *
+ */
 void warehouseMajordomo::listenTo(tcpChat *tcpChat)
 {
     this->_tcpChat = tcpChat;
@@ -13,6 +17,11 @@ void warehouseMajordomo::listenTo(tcpChat *tcpChat)
             this, SLOT(parseAndDispatch(QString, QTcpSocket*)));
 }
 
+/*
+ * Richiama il parser per estrarre la lista delle richieste contenute nel
+ * messaggio e, se andato a buon fine, invoca l'esecuzione
+ *
+ */
 void warehouseMajordomo::parseAndDispatch(QString message, QTcpSocket* socket)
 {
     this->_communicationSocket = socket;
@@ -27,24 +36,66 @@ void warehouseMajordomo::parseAndDispatch(QString message, QTcpSocket* socket)
     this->dispatchRequests(this->_requestParser->getSHMRequestsList());
 }
 
+/*
+ * Esegue tutte le richieste codificate e contenute nella lista
+ *
+ */
 void warehouseMajordomo::dispatchRequests(QList<SHMRequest *> SHMRequestsList)
 {
+    QMap<QString, QString> replyToSend;
+
     // and..... action!
     for ( int i = 0 ; i < SHMRequestsList.count() ; i++ )
     {
-        QString action = SHMRequestsList[i]->_data["request"].toString();
+        QString action = SHMRequestsList[i]->_data["request"].toString();       // the action
+        QJsonValue requestData = SHMRequestsList[i]->_data;                     // the request
 
         // ADD A NEW OBJECT
         if ( action == "add a new object")
         {
-            storeObject* createdObject = this->operation_CreateANewObject(SHMRequestsList[i]->_data);
-            this->_warehouse->addPackageToWareHouse(createdObject);
-            QMap<QString, QString> valuesToSend;
-            valuesToSend.insert("requestReferenceID", QString(SHMRequestsList[i]->_applicationPID + "-" + SHMRequestsList[i]->_UTCTimestamp));
-            valuesToSend.insert("createdObjectID", createdObject->internalCode().toString());
-            this->_tcpChat->sendJSONMessageToClient(this->_communicationSocket, valuesToSend);
+            storeObject* createdObject = this->operation_CreateANewObject(requestData);
+
+            if ( createdObject == nullptr )
+            {
+                replyToSend.insert("success", "false");         // unsuccessful operation
+
+                qDebug();
+                qDebug() << "(warehouseMajordomo::dispatchRequests)";
+                qDebug() << "can't create a new object due to request format error";
+            } else
+            {
+                this->_warehouse->addPackage(createdObject);    // add created object to warehose
+
+                replyToSend.insert("success", "true");          // successful operation
+
+                qInfo();
+                qInfo() << "(warehouseMajordomo::dispatchRequests)";
+                qInfo() << "new object successfully created and added to warehouse";
+            }
         } else
-        if  ( action == "pick")
+        // SET LOCATION
+        if ( action == "set object location")
+        {
+            bool success = this->operation_SetObjectLocation(requestData);
+
+            if ( !success )
+            {
+                replyToSend.insert("success", "false");         // unsuccessful operation
+
+                qDebug();
+                qDebug() << "(warehouseMajordomo::dispatchRequests)";
+                qDebug() << "can't set object location";
+            } else
+            {
+                replyToSend.insert("success", "true");          // successful operation
+
+                qInfo();
+                qInfo() << "(warehouseMajordomo::dispatchRequests)";
+                qInfo() << "object successfully placed in the warehouse";
+            }
+
+        } else
+        if ( action == "set object as moving")
         {
 
         }
@@ -52,6 +103,14 @@ void warehouseMajordomo::dispatchRequests(QList<SHMRequest *> SHMRequestsList)
         {
             qWarning() << "Request " << action << " unknown";
         }
+
+        replyToSend.insert("requestReferenceID",
+                           QString(SHMRequestsList[i]->_applicationPID) +
+                           "-" +
+                           QString(SHMRequestsList[i]->_UTCTimestamp) +
+                           "." +
+                           QString::number(i));
+        this->_tcpChat->sendJSONMessageToClient(this->_communicationSocket, replyToSend);
     }
 }
 
@@ -60,12 +119,13 @@ void warehouseMajordomo::setWareHouse(wareHouse *warehouse)
     this->_warehouse = warehouse;
 }
 
-/*
- * Create cylinder or boxes objects
- *
- * actually filled fields are:
- *   * UUID
- */
+/*!
+    \fn warehouseMajordomo::operation_CreateANewObject(QJsonValue request)
+
+    The \a request contains new object data.
+    A cylinder or a box object is created and its pointer returned.
+    If the operation is unsuccessfull \c nullptr is returned.
+*/
 storeObject* warehouseMajordomo::operation_CreateANewObject(QJsonValue request)
 {
     QJsonObject dummyQJO;
@@ -106,36 +166,67 @@ storeObject* warehouseMajordomo::operation_CreateANewObject(QJsonValue request)
         else
         qWarning() << "barcode type " << newBarCodeData->code << " not yet added to available types";
         newStoreObject->addBarCode(newBarCodeData);
+
+        // the first barcode is the object unique identiy code
+        if ( i == 0 ) {
+            newStoreObject->setUniqueBarcode(newBarCodeData->code);
+        }
     }
 
     // set arrival timestamp
-    computedDateTime = new QDateTime();
-    computedDateTime->setTime_t(static_cast<uint>(request["arrivalTimestamp"].toInt()));
-    newStoreObject->setArrivalLocalDateTime(computedDateTime);
+    //computedDateTime = new QDateTime();
+    //computedDateTime->setTime_t(static_cast<uint>(request["arrivalTimestamp"].toInt()));
+    //newStoreObject->setArrivalLocalDateTime(computedDateTime);
 
     // cylinder specific
     if (request["objectType"].toString() == "cylinder")                 // a cylinder
     {
         // set cylinder size
-        QJsonValue sizeJsonVariant = request["size"];
-        int height = sizeJsonVariant["height"].toInt();
-        int radius = sizeJsonVariant["radius"].toInt();
-        (static_cast<objectCylinder>(newStoreObject)).setHeightInCentimeters(height);
-        (static_cast<objectCylinder>(newStoreObject)).setRadiusInCentimeters(radius);
+        //QJsonValue sizeJsonVariant = request["size"];
+        //int height = sizeJsonVariant["height"].toInt();
+        //int radius = sizeJsonVariant["radius"].toInt();
+        //(static_cast<objectCylinder>(newStoreObject)).setHeightInCentimeters(height);
+        //(static_cast<objectCylinder>(newStoreObject)).setRadiusInCentimeters(radius);
 
         // now print debug values
         qDebug();
         qDebug() << "(warehouseMajordomo::operation_CreateANewObject)";
         qDebug() << "ⓘ creato oggetto cilindro:";
         qDebug() << "  internal code:            " << newStoreObject->internalCode().toString();
-        qDebug() << "  creation local date/time: " << newStoreObject->arrivalLocalDateTime()->toString(Qt::DateFormat::LocalDate);
-        qDebug() << "  arrival local date/time:  " << newStoreObject->creationLocalDateTime()->toString(Qt::DateFormat::LocalDate);
-        qDebug() << "  height:                   " <<  (static_cast<objectCylinder>(newStoreObject)).heightInCentimeters();
-        qDebug() << "  radius:                   " <<  (static_cast<objectCylinder>(newStoreObject)).radiusInCentimeters();
-
+        qDebug() << "  unique barcode:           " << newStoreObject->uniqueBarcode();
+        qDebug() << "  creation local date/time: " << newStoreObject->creationLocalDateTime()->toString(Qt::DateFormat::LocalDate);
+        //qDebug() << "  arrival local date/time:  " << newStoreObject->arrivalLocalDateTime()->toString(Qt::DateFormat::LocalDate);
+        //qDebug() << "  height:                   " <<  (static_cast<objectCylinder>(newStoreObject)).heightInCentimeters();
+        //qDebug() << "  radius:                   " <<  (static_cast<objectCylinder>(newStoreObject)).radiusInCentimeters();
     }
 
     return newStoreObject;
+}
+
+/*!
+    \fn warehouseMajordomo::operation_SetObjectLocation(QJsonValue request)
+
+    The \a request contains object barcode and new location cooordinates.
+    If the new location can be set \c true is returned, otherwise \c false.
+*/
+bool warehouseMajordomo::operation_SetObjectLocation(QJsonValue request)
+{
+    QString barcode = request["barcode"].toString();
+    QJsonObject dummyQJO = request["location"].toObject();
+    int x = dummyQJO["X"].toInt();
+    int y = dummyQJO["Y"].toInt();
+    int z = dummyQJO["Z"].toInt();
+
+    if ( !this->_warehouse->placePackage(barcode, x, y, z) )                    // set new location
+    {
+        qWarning();
+        qWarning() << "(warehouseMajordomo::operation_SetObjectLocation)";
+        qWarning() << "object not found in the warehouse";
+
+        return false;
+    }
+
+    return true;
 }
 
 

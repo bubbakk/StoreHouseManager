@@ -1,0 +1,22 @@
+[{
+  "hostRequestData": {
+    "IPAddress": "192.168.0.0",
+    "hostName": "darkStellar",
+    "applicationName": "SHM Gaffer",
+    "applicationPID": 1234,
+    "UTCTimestamp": 1234567,
+    "localTimestamp": 1234567,
+    "readableLocalDateTime": "19 Luglio 2019, 17:15 15s",
+    "messageType": "action",
+    "sourceID": 1,
+    "data": {
+      "request": "set object location",
+      "barcode": "1000801235",
+      "location": {
+        "X": 123,
+        "Y": 456,
+        "Z": 0
+      }
+    }
+  }
+}]

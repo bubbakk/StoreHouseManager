@@ -38,6 +38,7 @@ private:
                                     "localTimestamp",
                                     "readableLocalDateTime",
                                     "messageType",
+                                    "sourceID",
                                     "data"};
 
 protected:
