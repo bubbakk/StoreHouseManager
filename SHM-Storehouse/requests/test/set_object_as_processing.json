@@ -10,13 +10,8 @@
     "messageType": "action",
     "sourceID": 1,
     "data": {
-      "request": "set object location",
-      "barcode": "1000801235",
-      "location": {
-        "X": 123,
-        "Y": 456,
-        "Z": 789
-      }
+      "request": "set object as processing",
+      "barcode": "1000801235"
     }
   }
 }]

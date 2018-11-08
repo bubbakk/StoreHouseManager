@@ -15,7 +15,7 @@ class wareHouse
 {
 public:
     wareHouse(int maxHorizontalSizeInMeters, int maxVerticalSizeInMeters);
-    bool addArea(QList<QPoint> perimeter, QString name, QString color = "");
+    //bool addArea(QList<QPoint> perimeter, QString name, QString color = "");
 
     bool isPackagePresent(QString code);                // verifica se il barcode è presente in magazzino
     bool addPackage(storeObject *package);              // aggiunge un nuovo oggetto al magazzino
@@ -36,6 +36,8 @@ public:
         QPolygon perimetralPoints;
     };
     QList<areaStruct> areas;
+
+    QHash<QString, storeObject *> packages() const;
 
 private:
     int _maxHorizontalSizeInCentimeters;

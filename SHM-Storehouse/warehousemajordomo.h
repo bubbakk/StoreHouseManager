@@ -33,11 +33,13 @@ private:
 
     storeObject* operation_CreateANewObject(QJsonValue request);
     bool operation_SetObjectLocation(QJsonValue request);
+    bool operation_SetObjectStatus(QJsonValue request);
 
 signals:
 
 private slots:
     void parseAndDispatch(QString, QTcpSocket*);
+    void commandPrintAll(void);
 };
 
 #endif // WAREHOUSEMAJORDOMO_H

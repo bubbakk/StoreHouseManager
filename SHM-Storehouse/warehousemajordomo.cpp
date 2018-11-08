@@ -15,6 +15,9 @@ void warehouseMajordomo::listenTo(tcpChat *tcpChat)
 
     connect(this->_tcpChat, SIGNAL(messageReceived(QString, QTcpSocket*)),
             this, SLOT(parseAndDispatch(QString, QTcpSocket*)));
+    connect(this->_tcpChat, SIGNAL(printAllRequest(void)),
+            this, SLOT(commandPrintAll(void)));
+
 }
 
 /*
@@ -34,6 +37,33 @@ void warehouseMajordomo::parseAndDispatch(QString message, QTcpSocket* socket)
 
     // dispatch
     this->dispatchRequests(this->_requestParser->getSHMRequestsList());
+}
+
+void warehouseMajordomo::commandPrintAll()
+{
+    // print all objects in the warehouse
+    QHash<QString, storeObject*> _packages = this->_warehouse->packages();
+    QStringList codes = _packages.keys();
+    int objectsInTheWarehouse = _packages.keys().count();
+
+    if ( objectsInTheWarehouse == 0 )
+    {
+        qInfo();
+        qInfo() << "no object in the warehouse now";
+        return;
+    }
+
+    for (int i = 0 ; i < objectsInTheWarehouse ; i++)
+    {
+        storeObject* object = _packages.value(codes[i]);
+        qInfo();
+        qInfo() << "barcode: " << object->uniqueBarcode();
+        qInfo() << "status:  " << object->statusString();
+        qInfo() << "position:";
+        qInfo() << "   X: " << object->position()->locationX;
+        qInfo() << "   Y: " << object->position()->locationY;
+        qInfo() << "   Z: " << object->position()->locationZ;
+    }
 }
 
 /*
@@ -60,7 +90,7 @@ void warehouseMajordomo::dispatchRequests(QList<SHMRequest *> SHMRequestsList)
                 replyToSend.insert("success", "false");         // unsuccessful operation
 
                 qDebug();
-                qDebug() << "(warehouseMajordomo::dispatchRequests)";
+                qDebug() << "(warehouseMajordomo::" << Q_FUNC_INFO << ")";
                 qDebug() << "can't create a new object due to request format error";
             } else
             {
@@ -69,7 +99,7 @@ void warehouseMajordomo::dispatchRequests(QList<SHMRequest *> SHMRequestsList)
                 replyToSend.insert("success", "true");          // successful operation
 
                 qInfo();
-                qInfo() << "(warehouseMajordomo::dispatchRequests)";
+                qInfo() << "(warehouseMajordomo::" << Q_FUNC_INFO << ")";
                 qInfo() << "new object successfully created and added to warehouse";
             }
         } else
@@ -83,21 +113,36 @@ void warehouseMajordomo::dispatchRequests(QList<SHMRequest *> SHMRequestsList)
                 replyToSend.insert("success", "false");         // unsuccessful operation
 
                 qDebug();
-                qDebug() << "(warehouseMajordomo::dispatchRequests)";
+                qDebug() << "(warehouseMajordomo::" << Q_FUNC_INFO << ")";
                 qDebug() << "can't set object location";
             } else
             {
                 replyToSend.insert("success", "true");          // successful operation
 
                 qInfo();
-                qInfo() << "(warehouseMajordomo::dispatchRequests)";
+                qInfo() << "(warehouseMajordomo::" << Q_FUNC_INFO << ")";
                 qInfo() << "object successfully placed in the warehouse";
             }
-
         } else
-        if ( action == "set object as moving")
+        if ( action.length() > 14 && action.left(14) == "set object as ")
         {
+            bool success = this->operation_SetObjectStatus(requestData);
 
+            if ( !success )
+            {
+                replyToSend.insert("success", "false");         // unsuccessful operation
+
+                qDebug();
+                qDebug() << "(warehouseMajordomo::" << Q_FUNC_INFO << ")";
+                qDebug() << "can't set object location";
+            } else
+            {
+                replyToSend.insert("success", "true");          // successful operation
+
+                qInfo();
+                qInfo() << "(warehouseMajordomo::" << Q_FUNC_INFO << ")";
+                qInfo() << "object successfully placed in the warehouse";
+            }
         }
         else
         {
@@ -190,7 +235,7 @@ storeObject* warehouseMajordomo::operation_CreateANewObject(QJsonValue request)
 
         // now print debug values
         qDebug();
-        qDebug() << "(warehouseMajordomo::operation_CreateANewObject)";
+        qDebug() << "(warehouseMajordomo::" << Q_FUNC_INFO << ")";
         qDebug() << "ⓘ creato oggetto cilindro:";
         qDebug() << "  internal code:            " << newStoreObject->internalCode().toString();
         qDebug() << "  unique barcode:           " << newStoreObject->uniqueBarcode();
@@ -220,13 +265,41 @@ bool warehouseMajordomo::operation_SetObjectLocation(QJsonValue request)
     if ( !this->_warehouse->placePackage(barcode, x, y, z) )                    // set new location
     {
         qWarning();
-        qWarning() << "(warehouseMajordomo::operation_SetObjectLocation)";
+        qWarning() << "(warehouseMajordomo::" << Q_FUNC_INFO << ")";
         qWarning() << "object not found in the warehouse";
 
         return false;
     }
 
     return true;
+}
+
+bool warehouseMajordomo::operation_SetObjectStatus(QJsonValue request)
+{
+    QString barcode = request["barcode"].toString();
+    QJsonObject dummyQJO = request["location"].toObject();
+    QString action = (request["request"].toString()).mid(14);
+    bool success = false;
+
+    if ( action == "moving" ) {
+        success = this->_warehouse->setPackageAsMoving(barcode);
+    } else
+    if ( action == "static" ) {
+        success = this->_warehouse->setPackageAsStatic(barcode);
+    } else
+    if ( action == "processing" ) {
+        success = this->_warehouse->setPackageAsUnderProcessing(barcode);
+    } else
+    if ( action == "processed" ) {
+        success = this->_warehouse->setPackageAsProcessed(barcode);
+    } else
+    {
+        qWarning();
+        qWarning() << "(warehouseMajordomo::" << Q_FUNC_INFO << ")";
+        qWarning() << "status " << action << " unknown";
+    }
+
+    return success;
 }
 
 

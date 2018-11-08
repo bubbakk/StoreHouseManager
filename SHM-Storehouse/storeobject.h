@@ -58,6 +58,7 @@ public:
     void setUniqueBarcode(const QString &uniqueBarcode);
 
     statusEnum status() const;
+    QString statusString();
     void setStatus(const statusEnum &status);
 
     positionStruct* position() const;

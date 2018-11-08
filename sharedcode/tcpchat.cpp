@@ -87,6 +87,13 @@ void tcpChat::slotManageMessageReceived(QTcpSocket* socket, QString message)
         this->sendSimpleTextMessageToClient(socket, reply);
     }
 
+    // PRINTALL
+    if ( message == this->_chat->_commands["PRINTALL"] )
+    {
+        // emit signal request to print the warehouse situation
+        emit printAllRequest();
+    }
+
     // QUITCOMMAND
     if ( message == this->_chat->_commands["QUITCOMMAND"] ||  message == this->_chat->_commands["QUITCOMMAND_"] )
     {

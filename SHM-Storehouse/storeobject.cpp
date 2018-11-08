@@ -69,6 +69,15 @@ storeObject::statusEnum storeObject::status() const
     return _status;
 }
 
+QString storeObject::statusString()
+{
+    if ( this->status() == this->is_moving ) return "is moving";
+    if ( this->status() == this->is_processed ) return "is processed";
+    if ( this->status() == this->is_processing) return "is under processing";
+    if ( this->status() == this->is_static ) return "is static";
+    return "not yet set";
+}
+
 void storeObject::setStatus(const statusEnum &status)
 {
     _status = status;

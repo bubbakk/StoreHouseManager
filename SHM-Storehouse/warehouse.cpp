@@ -41,7 +41,7 @@ bool wareHouse::addPackage(storeObject *package)
 
 bool wareHouse::placePackage(QString code, int x, int y, int z)
 {
-    if ( this->isPackagePresent(code) ) {
+    if ( !this->isPackagePresent(code) ) {
         return false;
     }
 
@@ -90,6 +90,11 @@ bool wareHouse::setPackageAsProcessed(QString code)
 bool wareHouse::setPackageAsStatic(QString code)
 {
     return setPackageStatus(code, storeObject::is_static);
+}
+
+QHash<QString, storeObject *> wareHouse::packages() const
+{
+    return _packages;
 }
 
 bool wareHouse::setPackageStatus(QString code, storeObject::statusEnum status)

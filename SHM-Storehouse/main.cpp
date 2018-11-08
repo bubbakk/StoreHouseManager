@@ -33,7 +33,7 @@ void print_usage(char* appname)
 }
 
 int main(int argc, char *argv[])
-{    
+{
     QTextStream qout(stdout);
 
     shmRequestParser *requestsParser;
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 
     QCoreApplication app(argc, argv);
     QCoreApplication::setApplicationName("SHM Inventory");
-    QCoreApplication::setApplicationVersion("0.0.3");
+    QCoreApplication::setApplicationVersion("0.1.2");
 
     // print application info into terminal
     qout << endl << QCoreApplication::applicationName() << endl;

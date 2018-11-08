@@ -8,6 +8,7 @@ chat::chat(QObject *parent) : QObject(parent)
     this->_commands.insert("HELPCOMMAND",      "HELP");
     this->_commands.insert("STARTMSGCOMMAND",  "SHM_MSG_STA");
     this->_commands.insert("ENDMSGCOMMAND",    "SHM_MSG_STO");
+    this->_commands.insert("PRINTALL",         "PRINTALL");
     this->_commands.insert("QUITCOMMAND",      "QUIT");
     this->_commands.insert("QUITCOMMAND_",     "BYE");
 
@@ -26,6 +27,7 @@ chat::chat(QObject *parent) : QObject(parent)
     this->replies.insert("HELP",        "custom");
     this->replies.insert("SHM_MSG_STA", "Tell me...");
     this->replies.insert("SHM_MSG_STO", "ok.");
+    this->replies.insert("PRINTALL",    "data printed in the server logfile");
     this->replies.insert("QUIT",        "Bye");
     this->replies.insert("BYE",         "Bye");
 }
@@ -60,7 +62,7 @@ QString chat::replyTo(QString request)
 
         return reply.join(this->_lineSeparator);
     }
-    
+
     // ritorna la risposta se c'è, oppure stringa vuota
     return (this->replies.keys().indexOf(request) == -1 ? "" : this->replies[request]);
 }

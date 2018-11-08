@@ -25,6 +25,7 @@ public:
 
 signals:
     void messageReceived(QString message, QTcpSocket *socket);
+    void printAllRequest(void);
 
 public slots:
 

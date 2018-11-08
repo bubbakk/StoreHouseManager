@@ -1,0 +1,67 @@
+[{
+    "hostRequestData": {
+      "IPAddress": "192.168.0.0",
+      "hostName": "darkStellar",
+      "applicationName": "SHM Gaffer",
+      "applicationPID": 1234,
+      "UTCTimestamp": 1234567,
+      "localTimestamp": 1234567,
+      "readableLocalDateTime": "19 Luglio 2019, 17:15 15s",
+      "messageType": "action",
+      "sourceID": 1,
+      "data": {
+        "request": "add a new object",
+        "objectType": "cylinder",
+        "barCodes": [{
+          "type": "code-128",
+          "code": "1000801235"
+        },{
+          "type": "code-128",
+          "code": "PBIN80800800BI"
+        }],
+        "arrivalTimestamp": 1539783454,
+        "readableArrivalDateTime": "Wed, 17 Oct 2018 13:33:59 GMT",
+        "size": {
+          "height": 250,
+          "radius": 235
+        }
+      }
+    }
+  },{
+  "hostRequestData": {
+      "IPAddress": "192.168.0.0",
+      "hostName": "darkStellar",
+      "applicationName": "SHM Gaffer",
+      "applicationPID": 1234,
+      "UTCTimestamp": 1234567,
+      "localTimestamp": 1234567,
+      "readableLocalDateTime": "19 Luglio 2019, 17:15 15s",
+      "messageType": "action",
+      "sourceID": 1,
+      "data": {
+        "request": "set object as moving",
+        "barcode": "1000801235"
+      }
+    }
+  },{
+    "hostRequestData": {
+      "IPAddress": "192.168.0.0",
+      "hostName": "darkStellar",
+      "applicationName": "SHM Gaffer",
+      "applicationPID": 1234,
+      "UTCTimestamp": 1234567,
+      "localTimestamp": 1234567,
+      "readableLocalDateTime": "19 Luglio 2019, 17:15 15s",
+      "messageType": "action",
+      "sourceID": 1,
+      "data": {
+        "request": "set object location",
+        "barcode": "1000801235",
+        "location": {
+          "X": 123,
+          "Y": 456,
+          "Z": 789
+        }
+      }
+    }
+}]
