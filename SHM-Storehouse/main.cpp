@@ -12,11 +12,13 @@
 #include "../sharedcode/tcpServer.h"
 #include "../sharedcode/messagehandler.h"
 #include "../sharedcode/tcpchat.h"
+#include "../sharedcode/webserver.h"
 
 #include "warehouse.h"
 #include "warehousemajordomo.h"
 
-#define TCP_port 12000
+#define TCP_port  12000
+#define HTTP_port 12001
 
 void print_usage(char* appname)
 {
@@ -43,11 +45,11 @@ int main(int argc, char *argv[])
     majordomo->setWareHouse(warehouse);
 
     QCoreApplication app(argc, argv);
-    QCoreApplication::setApplicationName("SHM Inventory");
-    QCoreApplication::setApplicationVersion("0.1.2");
+    QCoreApplication::setApplicationName("SHM Suite - storehouse");
+    QCoreApplication::setApplicationVersion("0.2.0");
 
     // print application info into terminal
-    qout << endl << QCoreApplication::applicationName() << endl;
+    qout << endl << QCoreApplication::applicationName() << " (c) 2018" << endl;
     qout << "Version " << QCoreApplication::applicationVersion() << endl;
     qout << "Design and development: Andrea Ferroni <andrea.ferroni.76@gmail.com>" << endl;
     qout << "Developed for: elite s.c.p.a. <info@elitetech.it>" << endl << endl;
@@ -110,8 +112,13 @@ int main(int argc, char *argv[])
             tcpChat* chat = new tcpChat(TCP_port);
             chat->startChat();
 
+            // start telnet-like server
+            // using namespace qhttp::client;
             // prepare to parse data and dispatch requests
             majordomo->listenTo(chat);
+
+            webServer webserver(&app);
+            webserver.start(HTTP_port);
 
         }
     }

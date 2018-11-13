@@ -59,6 +59,7 @@ void warehouseMajordomo::commandPrintAll()
         qInfo();
         qInfo() << "barcode: " << object->uniqueBarcode();
         qInfo() << "status:  " << object->statusString();
+        qInfo() << "entered: " << object->creationLocalDateTime();
         qInfo() << "position:";
         qInfo() << "   X: " << object->position()->locationX;
         qInfo() << "   Y: " << object->position()->locationY;
@@ -175,7 +176,7 @@ storeObject* warehouseMajordomo::operation_CreateANewObject(QJsonValue request)
 {
     QJsonObject dummyQJO;
     QJsonArray barCodesArray;
-    QDateTime *computedDateTime;
+    //QDateTime *computedDateTime;
     storeObject* newStoreObject = new objectCylinder();                 // instacing generates a UUID as internalCode property and creationLocalDateTime
 
     // check object type
